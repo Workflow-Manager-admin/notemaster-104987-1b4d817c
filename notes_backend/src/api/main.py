@@ -58,14 +58,37 @@ app = FastAPI(
     ]
 )
 
-# Add CORS middleware
+# CORS configuration
+FRONTEND_URL = os.getenv("FRONTEND_URL", "https://vscode-internal-2892-beta.beta01.cloud.kavia.ai:3000")
+
+# Add CORS middleware with secure configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with specific origins
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
+    expose_headers=["X-Total-Count"],
+    max_age=3600,
 )
+
+# Global exception handler
+@app.exception_handler(Exception)
+async def global_exception_handler(request, exc):
+    """Handle all unhandled exceptions globally."""
+    error_msg = str(exc)
+    if isinstance(exc, HTTPException):
+        return JSONResponse(
+            status_code=exc.status_code,
+            content={"detail": exc.detail}
+        )
+    
+    # Log unexpected errors
+    print(f"Unexpected error: {error_msg}")
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content={"detail": "An unexpected error occurred. Please try again later."}
+    )
 
 # Initialize database on startup
 @app.on_event("startup")
