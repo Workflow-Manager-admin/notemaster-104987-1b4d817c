@@ -49,6 +49,8 @@ Traceback (most recent call last):
   File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
   File "<frozen importlib._bootstrap_external>", line 995, in exec_module
   File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-  File "/home/kavia/workspace/code-generation/notemaster-104987-1b4d817c/notes_backend/src/api/main.py", line 5, in <module>
-    from sqlalchemy.orm import Session
+  File "/home/kavia/workspace/code-generation/notemaster-104987-1b4d817c/notes_backend/src/api/main.py", line 4, in <module>
+    from ..database import init_db
+  File "/home/kavia/workspace/code-generation/notemaster-104987-1b4d817c/notes_backend/src/database.py", line 2, in <module>
+    from sqlalchemy import create_engine
 ModuleNotFoundError: No module named 'sqlalchemy'
